@@ -1,5 +1,6 @@
 import tkinter as tk
 from tkinter import NW
+from Profil import open_profile_window
 
 app = tk.Tk()
 app.title("Centre Sportif")
@@ -56,10 +57,13 @@ y=80
 option = ["ACCUEIL" , "PAGES" , "PROFIL" , "PARAMETRES" , "AIDE"]
 
 for i in range(5):
-    tk.Button(navLateral,text=option[i], font="ExtraCondensed 16",bg="gray30",fg="white",activebackground="gray30",bd=0).place(x=0,y=y)
-    y +=40
-
+    if option[i] == "PROFIL":
+        # Si l'option est "PROFIL", le bouton ouvrira la fenêtre de profil
+        tk.Button(navLateral, text=option[i], font="ExtraCondensed 16", bg="gray30", fg="white", activebackground="gray30", bd=0, command=open_profile_window).place(x=0, y=y)
+    else:
+        # Pour les autres options, créez le bouton sans lier à une commande spécifique
+        tk.Button(navLateral, text=option[i], font="ExtraCondensed 16", bg="gray30", fg="white", activebackground="gray30", bd=0).place(x=0, y=y)
+    y += 40
 fermeBtn = tk.Button(navLateral,image=closeIcon,bg="gray30" , bd=0 , activebackground="gray30",command=switch)
 fermeBtn.place(x=250,y=10)
 app.mainloop()
-#achnou khasha dir had l application ?
