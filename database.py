@@ -33,8 +33,12 @@ def initialize_db():
     
     cursor.execute('''
         INSERT INTO activities (name, description, min_participants, max_participants)
-        VALUES (?, ?, ?, ?)
-    ''', ("Golf", "Golf LOL", 1, 5))
+        VALUES 
+        ('Karate', 'Karate Description', 2, 10),
+        ('Taekwondo', 'Taekwondo Description', 2, 8),
+        ('Golf', 'Golf LOL', 1, 4),
+        ('Basketball', 'Basketball Description', 5, 15)
+    ''')
 
 
 

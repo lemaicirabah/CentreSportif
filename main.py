@@ -1,13 +1,9 @@
 import tkinter as tk
-<<<<<<< HEAD
 from tkinter import ttk, messagebox
 from client import Client
 from activite import Activite
 import database
-=======
-from tkinter import NW
-from Profil import open_profile_window
->>>>>>> d5eb59c9c12399bd38eb6d45200331cbb5ca213b
+
 
 class SportCenterApp(tk.Tk):
     def __init__(self):
@@ -70,7 +66,6 @@ class SportCenterApp(tk.Tk):
         email_entry = ttk.Entry(reg_win)
         email_entry.grid(row=2, column=1, padx=10, pady=10)
 
-<<<<<<< HEAD
         ttk.Label(reg_win, text="Role:").grid(row=3, column=0, padx=10, pady=10)
         role_combo = ttk.Combobox(reg_win, values=["member", "instructor", "admin"])
         role_combo.grid(row=3, column=1, padx=10, pady=10)
@@ -123,16 +118,3 @@ class SportCenterApp(tk.Tk):
 if __name__ == "__main__":
     app = SportCenterApp()
     app.mainloop()
-=======
-for i in range(5):
-    if option[i] == "PROFIL":
-        # Si l'option est "PROFIL", le bouton ouvrira la fenêtre de profil
-        tk.Button(navLateral, text=option[i], font="ExtraCondensed 16", bg="gray30", fg="white", activebackground="gray30", bd=0, command=open_profile_window).place(x=0, y=y)
-    else:
-        # Pour les autres options, créez le bouton sans lier à une commande spécifique
-        tk.Button(navLateral, text=option[i], font="ExtraCondensed 16", bg="gray30", fg="white", activebackground="gray30", bd=0).place(x=0, y=y)
-    y += 40
-fermeBtn = tk.Button(navLateral,image=closeIcon,bg="gray30" , bd=0 , activebackground="gray30",command=switch)
-fermeBtn.place(x=250,y=10)
-app.mainloop()
->>>>>>> d5eb59c9c12399bd38eb6d45200331cbb5ca213b
