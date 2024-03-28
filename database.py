@@ -40,8 +40,6 @@ def initialize_db():
         ('Basketball', 'Basketball Description', 5, 15)
     ''')
 
-
-
     
     cursor.execute('''
     CREATE TABLE IF NOT EXISTS activity_groups (
@@ -59,6 +57,7 @@ def initialize_db():
         group_id INTEGER NOT NULL,
         status TEXT NOT NULL,
         FOREIGN KEY(user_id) REFERENCES users(user_id),
+        FOREIGN KEY(activity_id) REFRENCES activities(activity_id),
         FOREIGN KEY(group_id) REFERENCES activity_groups(group_id)
     )''')
 
@@ -118,6 +117,7 @@ def verify_user(username, password):
         user = cursor.fetchone()
         conn.close()
         return user[0] if user else None
+
 
 def execute_query(query, params=(), commit=False):
     """Execute a given SQL query with optional parameters and commit the changes."""

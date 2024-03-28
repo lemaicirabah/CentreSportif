@@ -116,5 +116,6 @@ class SportCenterApp(tk.Tk):
         messagebox.showinfo("Make Payment", "Payment functionality goes here.")
 
 if __name__ == "__main__":
+    database.initialize_db()
     app = SportCenterApp()
     app.mainloop()
