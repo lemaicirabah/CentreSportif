@@ -57,7 +57,6 @@ def initialize_db():
         group_id INTEGER NOT NULL,
         status TEXT NOT NULL,
         FOREIGN KEY(user_id) REFERENCES users(user_id),
-        FOREIGN KEY(activity_id) REFRENCES activities(activity_id),
         FOREIGN KEY(group_id) REFERENCES activity_groups(group_id)
     )''')
 
