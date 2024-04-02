@@ -110,10 +110,6 @@ class SportCenterApp(tk.Tk):
         except Exception as e:
             messagebox.showerror("Error", f"Failed to register user. Error: {e}")
 
-    
-    def make_payment(self):
-        pass  # Cette méthode reste inchangée
-
     def logout(self):
         self.main_app_window.withdraw()
         self.deiconify()

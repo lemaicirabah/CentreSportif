@@ -3,6 +3,8 @@ from tkinter import NW
 from Profil import Profil
 from activite import Activities
 from client import Client 
+from Paiement import Payment
+from Facture import Facture
 
 
 class Accueil:
@@ -34,6 +36,10 @@ class Accueil:
         tk.Button(main_app_window, text="Profil", command=profil.open_profile_window).pack(pady=5)
         tk.Button(main_app_window, text="S'inscrire à une activité", command=client_instance.show_register_interface).pack(pady=5)
         tk.Button(main_app_window, text="Se désinscrire d'une activité", command=client_instance.show_unregister_interface).pack(pady=5)
+        payment_instance = Payment(self.master, user_id)
+        tk.Button(main_app_window, text="Paiement", command=payment_instance.open_payment_window).pack(pady=5)
+        facture_instance = Facture(self.master, user_id)
+        tk.Button(main_app_window, text="Facture", command=facture_instance.display_invoice).pack(pady=5)
 
 if __name__ == "__main__":
     root = tk.Tk()

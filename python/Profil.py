@@ -83,6 +83,3 @@ class Profil:
         if user_info:
             return {'username': user_info[0], 'email': user_info[1], 'role': user_info[2]}
         return None
-
-        # Affichage de la fenêtre
-        profile_window.mainloop()

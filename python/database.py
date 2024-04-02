@@ -51,6 +51,28 @@ def initialize_db():
     )''')
 
     cursor.execute('''
+    CREATE TABLE IF NOT EXISTS payment_info (
+        payment_id INTEGER PRIMARY KEY AUTOINCREMENT,
+        user_id INTEGER NOT NULL,
+        account_number TEXT NOT NULL,
+        expiration_date TEXT NOT NULL,
+        cvv TEXT NOT NULL,
+        FOREIGN KEY(user_id) REFERENCES users(user_id)
+    )''')
+
+    cursor.execute('DROP TABLE IF EXISTS payments')
+
+    cursor.execute('''
+    CREATE TABLE IF NOT EXISTS payments (
+        payment_id INTEGER PRIMARY KEY AUTOINCREMENT,
+        user_id INTEGER NOT NULL,
+        account_number TEXT NOT NULL,
+        amount DECIMAL(10, 2) NOT NULL,
+        paid_at DATETIME NOT NULL,
+        FOREIGN KEY(user_id) REFERENCES users(user_id)
+    )''')
+
+    cursor.execute('''
     CREATE TABLE IF NOT EXISTS registrations (
         registration_id INTEGER PRIMARY KEY AUTOINCREMENT,
         user_id INTEGER NOT NULL,
