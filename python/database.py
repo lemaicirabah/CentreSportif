@@ -26,8 +26,8 @@ def initialize_db():
         activity_id INTEGER PRIMARY KEY AUTOINCREMENT,
         name TEXT NOT NULL,
         description TEXT,
-        min_participants INTEGER,
-        max_participants INTEGER
+        heure_debut INTEGER,
+        heure_fin INTEGER
     )''')
 
     

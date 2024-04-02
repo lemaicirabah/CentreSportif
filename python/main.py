@@ -1,8 +1,8 @@
 import tkinter as tk
 from tkinter import ttk, messagebox
 from client import Client
-from activite import get_activities
-from accueil import open_main_window
+from activite import Activities
+from accueil import Accueil
 import database
 
 
@@ -34,10 +34,7 @@ class SportCenterApp(tk.Tk):
             sticky="news", row=1, column=0, padx=50, pady=5)
         ttk.Button(self.main_frame, text="Register User", command=self.register_user, style="My.TButton").grid(
             sticky="news", row=2, column=0, padx=50, pady=5)
-        ttk.Button(self.main_frame, text="Sign Up for Activity", command=self.sign_up_for_activity,
-                   style="My.TButton").grid(sticky="news", row=3, column=0, padx=50, pady=5)
-        ttk.Button(self.main_frame, text="Make Payment", command=self.make_payment, style="My.TButton").grid(
-            sticky="news", row=4, column=0, padx=50, pady=5)
+
 
     def show_login_window(self):
         login_win = tk.Toplevel(self)
@@ -67,7 +64,7 @@ class SportCenterApp(tk.Tk):
                                        user_id=user_id)  # Passer None ou une instance appropriée à la place de `None`
             window.destroy()
             messagebox.showinfo("Login Success", "You are now logged in.")
-            open_main_window()  # Ouvrir la fenêtre principale après le login réussi
+            Accueil.open_main_window(self,user_id)  # Ouvrir la fenêtre principale après le login réussi
         else:
             messagebox.showerror("Login Failed", "Invalid username or password.")
 
@@ -113,28 +110,7 @@ class SportCenterApp(tk.Tk):
         except Exception as e:
             messagebox.showerror("Error", f"Failed to register user. Error: {e}")
 
-    def sign_up_for_activity(self):
-        activity_win = tk.Toplevel(self)
-        activity_win.title("Sign Up for Activity")
-
-        ttk.Label(activity_win, text="Choose an activity:").grid(row=0, column=0, padx=10, pady=10)
-        activities = get_activities()
-        activity_names = [activity[1] for activity in activities]
-        selected_activity = tk.StringVar()
-        activity_combo = ttk.Combobox(activity_win, textvariable=selected_activity, values=activity_names)
-        activity_combo.grid(row=0, column=1, padx=10, pady=10)
-        ttk.Button(activity_win, text="Sign Up", command=lambda: self.submit_activity_signup(
-            activities[activity_names.index(selected_activity.get())][0], activity_win)).grid(row=1, column=0,
-                                                                                              columnspan=2, pady=10)
-
-    def submit_activity_signup(self, activity_id, window):
-        if self.current_user:
-            self.current_user.register_activity(activity_id)
-            messagebox.showinfo("Success", "Successfully signed up for the activity.")
-            window.destroy()
-        else:
-            messagebox.showerror("Error", "You must be logged in to sign up for an activity.")
-
+    
     def make_payment(self):
         pass  # Cette méthode reste inchangée
 
@@ -142,9 +118,6 @@ class SportCenterApp(tk.Tk):
         self.main_app_window.withdraw()
         self.deiconify()
         self.current_user = None
-
-        # Assurez-vous que cette partie reste à la fin de votre fichier pour lancer application
-
 
 if __name__ == "__main__":
     database.initialize_db()

@@ -1,16 +1,15 @@
 import tkinter as tk
 from tkinter import ttk, messagebox
 from database import execute_query
+from activite import Activities
 
 class Client:
     def __init__(self, master, user_id):
         self.master = master
         self.user_id = user_id
-        tk.Label(master, text="Choisissez une action :").pack(pady=10)
-        tk.Button(master, text="S'inscrire à une activité", command=self.show_register_interface).pack(pady=5)
-        tk.Button(master, text="Se désinscrire d'une activité", command=self.show_unregister_interface).pack(pady=5)
 
-        self.activities = self.get_activities()
+
+        self.activities = Activities.get_activities()
         self.activities_names = [activity[1] for activity in self.activities]
 
         self.activity_var = tk.StringVar()
@@ -21,20 +20,7 @@ class Client:
         query = "SELECT user_id FROM users WHERE username=? AND password=?"
         user = execute_query(query, (username, password)).fetchone()
         return user[0] if user else None
-    @staticmethod
-    def get_activities():
-        query = "SELECT activity_id, name,heure_debut,heure_fin FROM activities"
-        activities = execute_query(query).fetchall()
-        return activities
-
-    def register_activity(self):
-        selected_activity_name = self.activity_var.get()
-        selected_activity_id = [activity[0] for activity in self.activities if activity[1] == selected_activity_name][0]
-
-        query = "INSERT INTO activity_groups (activity_id, user_id) VALUES (?, ?)"
-        execute_query(query, (selected_activity_id, self.user_id))
-
-        tk.messagebox.showinfo("Inscription réussie", f"Vous êtes inscrit à l'activité: {selected_activity_name}")
+    
 
     def show_register_interface(self):
         # Création d'une nouvelle fenêtre Toplevel pour l'inscription
