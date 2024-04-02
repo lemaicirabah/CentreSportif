@@ -1,10 +1,8 @@
 import tkinter as tk
 from tkinter import ttk, messagebox
 from client import Client
-from activite import Activities
 from accueil import Accueil
 import database
-
 
 class SportCenterApp(tk.Tk):
     def __init__(self):
