@@ -24,13 +24,14 @@ class Facture:
         conn = connect_db()
         cursor = conn.cursor()
         try:
-            cursor.execute("SELECT account_number, amount, paid_at FROM payments WHERE user_id=?", (self.user_id,))
+            cursor.execute("SELECT account_number, expiration_date, cvv FROM payment_info WHERE user_id=?", (self.user_id,))
             payment_info = cursor.fetchone()
             if payment_info:
                 return {
                     "Account Number": payment_info[0],
-                    "Amount Paid": payment_info[1],
-                    "Payment Date": payment_info[2]
+                    "Expiration date": payment_info[1],
+                    "CVV": payment_info[2],
+                    "Amount paid": "100$" 
                 }
         except Exception as e:
             messagebox.showerror("Database Error", f"An error occurred while fetching invoice details: {e}")
