@@ -13,30 +13,35 @@ class Accueil:
         self.master.title("Main Window")
         tk.Button(master, text="Open New Window", command=self.open_main_window).pack()
 
-
-    def open_main_window(self,user_id):
+    def open_main_window(self, user_id):
         self.withdraw()
         main_app_window = tk.Toplevel(self.master)
         main_app_window.title("Centre Sportif")
-        main_app_window.config(bg="gray30")
-        main_app_window.geometry("400x600")
-        # Chargez les images
-        navIcon = tk.PhotoImage(file='../images/menu.png')
-        closeIcon = tk.PhotoImage(file='../images/close.png')
-        fontImage = tk.PhotoImage(file='../images/font.png')
-        # Note: Pour éviter le garbage collection sur les images, attachez-les à la fenêtre
-        main_app_window.navIcon = navIcon
-        main_app_window.closeIcon = closeIcon
-        main_app_window.fontImage = fontImage
-        client_instance = Client(main_app_window,user_id)
+        main_app_window.config(bg="#332c7a")
+        main_app_window.geometry("400x500")
+        main_app_window.resizable(width=False, height=False)
+        client_instance = Client(main_app_window, user_id)
 
-        profil = Profil(main_app_window,user_id)
+        profil = Profil(main_app_window, user_id)
 
-        tk.Label(main_app_window, text="Choisissez une action :").pack(pady=10)
-        tk.Button(main_app_window, text="Profil", command=profil.open_profile_window).pack(pady=5)
-        tk.Button(main_app_window, text="S'inscrire à une activité", command=client_instance.show_register_interface).pack(pady=5)
-        tk.Button(main_app_window, text="Se désinscrire d'une activité", command=client_instance.show_unregister_interface).pack(pady=5)
+        title = tk.Label(main_app_window, background="#332c7a", text="Choisissez une action", font=("Arial", 22))
+        title.grid(row=0, column=1, pady=0, padx=10, sticky="EW")
+
+        profil_button = tk.Button(main_app_window, text="Edit my profil", command=profil.open_profile_window)
+        profil_button.grid(row=1, column=1, pady=10, padx=20, sticky="EW")
+
+        register_button = tk.Button(main_app_window, text="Register for an activity",
+                                    command=client_instance.show_register_interface)
+        register_button.grid(row=2, column=1, pady=10, padx=10, sticky="EW")
+
+        unsubscribe_button = tk.Button(main_app_window, text="Unsubscribe from an activity",
+                                       command=client_instance.show_unregister_interface)
+        unsubscribe_button.grid(row=3, column=1, pady=10, padx=10, sticky="EW")
+
         payment_instance = Payment(self.master, user_id)
-        tk.Button(main_app_window, text="Paiement", command=payment_instance.open_payment_window).pack(pady=5)
+        payment_button = tk.Button(main_app_window, text="Payment", command=payment_instance.open_payment_window)
+        payment_button.grid(row=4, column=1, pady=10, padx=10, sticky="EW")
+
         facture_instance = Facture(self.master, user_id)
-        tk.Button(main_app_window, text="Facture", command=facture_instance.display_invoice).pack(pady=5)
+        invoice_button = tk.Button(main_app_window, text="View my invoice", command=facture_instance.display_invoice)
+        invoice_button.grid(row=5, column=1, pady=10, padx=10, sticky="EW")
