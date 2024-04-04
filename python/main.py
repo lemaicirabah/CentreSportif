@@ -1,14 +1,11 @@
 import tkinter as tk
 from tkinter import ttk, messagebox
-from Profil import Profil
-from Paiement import Payment
-from Facture import Facture
+from accueil import Accueil
 from client import Client
 import database
 
 
 def submit_registration(username, password, email, role, window):
-    """Submit the user registration details to the database."""
     if not username or not password or not email or not role:
         messagebox.showerror("Error", "All fields are required!")
         return
@@ -65,7 +62,8 @@ class SportCenterApp(tk.Tk):
         login_win.iconbitmap('icon.ico')
         login_win.configure(background="#332c7a")
 
-        title = ttk.Label(login_win, style="My.TLabel", text="Enter your username\nand password to log in", font=("Arial", 16))
+        title = ttk.Label(login_win, style="My.TLabel", text="Enter your username\nand password to log in",
+                          font=("Arial", 16))
         title.place(relx=0.5, rely=0.1, anchor=tk.CENTER)
         ttk.Label(login_win, text="Username:", font=("Arial", 14)).place(relx=0.15, rely=0.3, anchor=tk.CENTER)
 
@@ -79,27 +77,6 @@ class SportCenterApp(tk.Tk):
             username_entry.get(), password_entry.get(), login_win, self), style="My.TButton").place(relx=0.5, rely=0.5,
                                                                                                     anchor=tk.CENTER)
 
-    def open_main_window(self, user_id):
-        self.withdraw()
-        main_app_window = tk.Toplevel(self.master)
-        main_app_window.title("Centre Sportif")
-        main_app_window.config(bg="gray30")
-        main_app_window.geometry("400x600")
-        client_instance = Client(main_app_window, user_id)
-
-        profil = Profil(main_app_window, user_id)
-
-        tk.Label(main_app_window, text="Choisissez une action :").pack(pady=10)
-        tk.Button(main_app_window, text="Profil", command=profil.open_profile_window).pack(pady=5)
-        tk.Button(main_app_window, text="S'inscrire à une activité",
-                  command=client_instance.show_register_interface).pack(pady=5)
-        tk.Button(main_app_window, text="Se désinscrire d'une activité",
-                  command=client_instance.show_unregister_interface).pack(pady=5)
-        payment_instance = Payment(self.master, user_id)
-        tk.Button(main_app_window, text="Paiement", command=payment_instance.open_payment_window).pack(pady=5)
-        facture_instance = Facture(self.master, user_id)
-        tk.Button(main_app_window, text="Facture", command=facture_instance.display_invoice).pack(pady=5)
-
     def verify_login(self, username, password, window, window1):
         user_id = Client.verify_user(username, password)
         if user_id:
@@ -107,7 +84,7 @@ class SportCenterApp(tk.Tk):
                                        user_id=user_id)
             window.destroy()
             messagebox.showinfo("Login Success", "You are now logged in.")
-            self.open_main_window(self)
+            Accueil.open_main_window(self, user_id)
         else:
             messagebox.showerror("Login Failed", "Invalid username or password.")
 
