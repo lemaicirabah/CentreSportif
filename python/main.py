@@ -8,52 +8,58 @@ class SportCenterApp(tk.Tk):
     def __init__(self):
         super().__init__()
         self.title("Sport Center")
-        self.geometry("400x300")
-        self.current_user = None
-        self.configure(bg='#333333')
-        self.main_frame = ttk.Frame(self)
-        style = ttk.Style(self)
-        style.configure('My.TFrame', background='#333333')
+        self.configure(bg='#232F34')
+        self.geometry('400x500')
+       # self.resizable(width=False, height=False)
+
         self.main_frame = ttk.Frame(self, style='My.TFrame')
-        self.main_frame.pack()
-        self.rowconfigure(0, weight=1)
-        self.columnconfigure(0, weight=1)
-        style = ttk.Style()
-        style.configure('My.TButton', font=('Helvetica', 12, 'bold'), padding=10)
+        self.main_frame.pack(fill=tk.BOTH, expand=True)
+
+        style = ttk.Style(self)
+        style.configure('My.TFrame', background='#232F34')
+        style.configure('My.TLabel', background='#232F34', foreground='#FFFFFF')
+        style.configure('My.TButton', font=('Arial', 12, 'bold'), padding=10, foreground='#000000',
+                        background='black', width='8')
 
         self.initialize_ui()
 
     def initialize_ui(self):
-        style = ttk.Style(self)
-        style.configure('My.TLabel', background='#333333', foreground='#FFFFFF')
-        ttk.Label(self.main_frame, style='My.TLabel', text="Welcome to the Sport Center!", font=("Arial", 16)).grid(
-            row=0, column=0, pady=20)
-        ttk.Button(self.main_frame, text="Login", command=self.show_login_window, style="My.TButton").grid(
-            sticky="news", row=1, column=0, padx=50, pady=5)
-        ttk.Button(self.main_frame, text="Register User", command=self.register_user, style="My.TButton").grid(
-            sticky="news", row=2, column=0, padx=50, pady=5)
 
+        welcome_label = ttk.Label(self.main_frame, style='My.TLabel', text="Welcome to the Sport Center!",
+                                  font=("Arial", 22))
+        welcome_label.grid(row=0, column=0, pady=0, padx=10, sticky="EW")
+        welcome_label.place(relx=0.5, rely=0.05, anchor=tk.CENTER, width=400)
+
+
+        login_button = ttk.Button(self.main_frame, text="Login", command=self.show_login_window, style="My.TButton")
+        login_button.grid(row=1, column=0, padx=10, pady=10,  sticky="EW")
+        login_button.place(relx=0.5, rely=0.3, anchor=tk.CENTER, width=200)
+
+        register_button = ttk.Button(self.main_frame, text="Register User", command=self.register_user,
+                                     style="My.TButton")
+        register_button.grid(sticky="EW", row=2, column=0, padx=10, pady=10)
+        register_button.place(relx=0.5, rely=0.45, anchor=tk.CENTER, width=200)
 
     def show_login_window(self):
         login_win = tk.Toplevel(self)
-        Frame = ttk.Frame(login_win)
+        frame = ttk.Frame(login_win)
         login_win.title("Login")
-        ttk.Label(Frame, text="Login", font=("Arial", 20)).grid(row=0, column=1, padx=10, pady=10)
+        ttk.Label(frame, text="Login", font=("Arial", 20)).grid(row=0, column=1, padx=10, pady=10)
         login_win.geometry("600x600")
 
-        ttk.Label(Frame, text="Username:", font=("Arial", 16)).grid(row=1, column=0, padx=10, pady=10)
-        username_entry = ttk.Entry(Frame, font=("Arial", 16))
+        ttk.Label(frame, text="Username:", font=("Arial", 16)).grid(row=1, column=0, padx=10, pady=10)
+        username_entry = ttk.Entry(frame, font=("Arial", 16))
         username_entry.grid(row=1, column=1, padx=10, pady=10)
 
-        ttk.Label(Frame, text="Password:", font=("Arial", 16)).grid(row=2, column=0, padx=10, pady=10)
-        password_entry = ttk.Entry(Frame, show="*", font=("Arial", 16))
+        ttk.Label(frame, text="Password:", font=("Arial", 16)).grid(row=2, column=0, padx=10, pady=10)
+        password_entry = ttk.Entry(frame, show="*", font=("Arial", 16))
         password_entry.grid(row=2, column=1, padx=10, pady=10)
 
-        ttk.Button(Frame, text="Login", command=lambda: self.verify_login(
+        ttk.Button(frame, text="Login", command=lambda: self.verify_login(
             username_entry.get(), password_entry.get(), login_win, self), style="My.TButton").grid(row=3, column=1,
                                                                                                    columnspan=2,
                                                                                                    pady=10)
-        Frame.pack()
+        frame.pack()
 
     def verify_login(self, username, password, window, window1):
         user_id = Client.verify_user(username, password)

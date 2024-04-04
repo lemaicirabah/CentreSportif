@@ -60,8 +60,6 @@ def initialize_db():
         FOREIGN KEY(user_id) REFERENCES users(user_id)
     )''')
 
-    cursor.execute('DROP TABLE IF EXISTS payments')
-
     cursor.execute('''
     CREATE TABLE IF NOT EXISTS payments (
         payment_id INTEGER PRIMARY KEY AUTOINCREMENT,

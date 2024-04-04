@@ -40,8 +40,3 @@ class Accueil:
         tk.Button(main_app_window, text="Paiement", command=payment_instance.open_payment_window).pack(pady=5)
         facture_instance = Facture(self.master, user_id)
         tk.Button(main_app_window, text="Facture", command=facture_instance.display_invoice).pack(pady=5)
-
-if __name__ == "__main__":
-    root = tk.Tk()
-    app = Accueil(root)
-    root.mainloop()
