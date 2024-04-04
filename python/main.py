@@ -4,7 +4,6 @@ from accueil import Accueil
 from client import Client
 import database
 
-
 def submit_registration(username, password, email, role, window):
     if not username or not password or not email or not role:
         messagebox.showerror("Error", "All fields are required!")
@@ -81,10 +80,18 @@ class SportCenterApp(tk.Tk):
         user_id = Client.verify_user(username, password)
         if user_id:
             self.current_user = Client(master=None,
-                                       user_id=user_id)
+                                       user_id=user_id,
+                                       nom=None,
+                                       adresse=None,
+                                       courriel=None,
+                                       n_telephone=None)
             window.destroy()
             messagebox.showinfo("Login Success", "You are now logged in.")
-            Accueil.open_main_window(self, user_id)
+            Accueil.open_main_window(self, user_id,
+                                     nom=None,
+                                     adresse=None,
+                                     courriel=None,
+                                     n_telephone=None)
         else:
             messagebox.showerror("Login Failed", "Invalid username or password.")
 

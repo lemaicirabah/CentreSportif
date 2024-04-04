@@ -14,11 +14,11 @@ def initialize_db():
     cursor.execute('''
     CREATE TABLE IF NOT EXISTS users (
         user_id INTEGER PRIMARY KEY AUTOINCREMENT,
-        username TEXT NOT NULL UNIQUE,
-        password TEXT NOT NULL,
-        email TEXT NOT NULL UNIQUE,
-        is_member INTEGER DEFAULT 0,
-        role TEXT NOT NULL
+        nom TEXT NOT NULL UNIQUE,
+        matricule TEXT NOT NULL,
+        courriel TEXT NOT NULL UNIQUE,
+        adresse TEXT NOT NULL,
+        n_telephone INTEGER NOT NULL
     )''')
 
     cursor.execute('''
@@ -92,13 +92,13 @@ def initialize_db():
     conn.commit()
     conn.close()
 
-def add_user(username, password, email, role):
+def add_user(nom, matricule, courriel,adresse,n_telephone):
     """Add a new user to the database."""
     conn = connect_db()
     cursor = conn.cursor()
     cursor.execute('''
-    INSERT INTO users (username, password, email, role) VALUES (?, ?, ?, ?)
-    ''', (username, password, email, role))
+    INSERT INTO users (nom, matricule, courriel,adresse,n_telephone) VALUES (?, ?, ?, ?)
+    ''', (nom, matricule, courriel,adresse,n_telephone))
     conn.commit()
     conn.close()
 
@@ -129,10 +129,10 @@ def get_activities():
     conn.close()
     return activities
 
-def verify_user(username, password):
+def verify_user(nom, matricule):
         conn = connect_db()
         cursor = conn.cursor()
-        cursor.execute("SELECT user_id FROM users WHERE username=? AND password=?", (username, password))
+        cursor.execute("SELECT user_id FROM users WHERE nom=? AND matricule=?", (nom, matricule))
         user = cursor.fetchone()
         conn.close()
         return user[0] if user else None

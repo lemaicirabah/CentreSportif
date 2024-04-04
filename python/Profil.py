@@ -19,7 +19,7 @@ class Profil:
         # Displaying the profile info
         tk.Label(profile_window, text="Voici la fenêtre de profil", bg="lightgray").pack(pady=10)
         if user_info:
-            info_text = f"Name: {user_info['username']}\nEmail: {user_info['email']}\nRole: {user_info['role']}"
+            info_text = f"Name: {user_info['nom']}\nCourriel: {user_info['courriel']}\nAdresse: {user_info['adresse']}\nTelephone: {user_info['telephone']}"
             tk.Label(profile_window, text=info_text, bg="lightgray").pack(pady=10)
             tk.Button(profile_window, text="Modifier", command=self.modify_profile).pack(pady=10)
 
@@ -30,33 +30,43 @@ class Profil:
         # New window for profile modification
         mod_window = tk.Toplevel(self.master)
         mod_window.title("Modify Profile")
-        mod_window.geometry("300x250")
+        mod_window.geometry("300x400")
         mod_window.config(bg="lightgray")
 
-        tk.Label(mod_window, text="New Username:", bg="lightgray").pack(pady=(10, 0))
+        tk.Label(mod_window, text="Nouveau Nom:", bg="lightgray").pack(pady=(10, 0))
         username_entry = tk.Entry(mod_window)
-        username_entry.pack(pady=(0, 10))
+        username_entry.pack(pady=(0, 20))
 
-        tk.Label(mod_window, text="New Email:", bg="lightgray").pack(pady=(10, 0))
+        tk.Label(mod_window, text="Nouveau Courriel:", bg="lightgray").pack(pady=(10, 0))
         email_entry = tk.Entry(mod_window)
         email_entry.pack(pady=(0, 20))
 
-        tk.Label(mod_window, text="Confirm Password", bg="lightgray").pack(pady=(10, 0))
+        tk.Label(mod_window, text="Confirme Matricule", bg="lightgray").pack(pady=(10, 0))
         pass_entry = tk.Entry(mod_window, show="*")
         pass_entry.pack(pady=(0, 20))
 
+        tk.Label(mod_window, text="Nouvelle Adresse:", bg="lightgray").pack(pady=(10, 0))
+        adresse_entry = tk.Entry(mod_window)
+        adresse_entry.pack(pady=(0, 20))
+
+        tk.Label(mod_window, text="Nouveau Telephone:", bg="lightgray").pack(pady=(10, 0))
+        telephone_entry = tk.Entry(mod_window)
+        telephone_entry.pack(pady=(0, 20))
+
         tk.Button(mod_window, text="Submit",
                   command=lambda: self.submit_modifications(username_entry.get(), email_entry.get(), pass_entry.get(),
+                                                            adresse_entry.get(),
+                                                            telephone_entry.get(),
                                                             mod_window)).pack(pady=(0, 10))
 
     def verify_password(self, entered_password, stored_password_hash):
         return entered_password == stored_password_hash
 
-    def submit_modifications(self, new_username, new_email, entered_password, window):
+    def submit_modifications(self, new_username, new_email, entered_password,new_adresse,new_telephone, window):
         conn = connect_db()
         cursor = conn.cursor()
 
-        cursor.execute("SELECT password FROM users WHERE user_id=?", (self.user_id,))
+        cursor.execute("SELECT matricule FROM users WHERE user_id=?", (self.user_id,))
         current_password_hash = cursor.fetchone()[0]  # Assuming passwords are hashed
 
         if not self.verify_password(entered_password, current_password_hash):
@@ -64,8 +74,8 @@ class Profil:
             return
 
         try:
-            cursor.execute("UPDATE users SET username=?, email=? WHERE user_id=?",
-                           (new_username, new_email, self.user_id))
+            cursor.execute("UPDATE users SET nom=?, courriel=? , adresse=?, n_telephone=? WHERE user_id=?",
+                           (new_username, new_email,new_adresse,new_telephone, self.user_id))
             conn.commit()
             tk.messagebox.showinfo("Success", "Profile updated successfully!")
             window.destroy()  # Close the modification window
@@ -78,9 +88,9 @@ class Profil:
         """Fetch user info from the database based on self.user_id"""
         conn = connect_db()
         cursor = conn.cursor()
-        cursor.execute("SELECT username, email, role FROM users WHERE user_id=?", (self.user_id,))
+        cursor.execute("SELECT nom, courriel, adresse ,n_telephone FROM users WHERE user_id=?", (self.user_id,))
         user_info = cursor.fetchone()
         conn.close()
         if user_info:
-            return {'username': user_info[0], 'email': user_info[1], 'role': user_info[2]}
+            return {'nom': user_info[0], 'courriel': user_info[1], 'adresse': user_info[2] ,  'telephone': user_info[3]}
         return None
