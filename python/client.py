@@ -3,17 +3,20 @@ from tkinter import ttk, messagebox
 from database import execute_query
 from activite import Activities
 
+
 class Client:
     def __init__(self, master, user_id, nom, adresse, courriel, n_telephone):
         self.master = master
         self.user_id = user_id
+
         self.nom = nom
         self.adresse = adresse
         self.courriel = courriel
         self.n0_telephone = n_telephone
 
+
         self.activities = Activities.get_activities()
-        self.activities_names = [activity[1] for activity in self.activities]
+        self.activities_names = list(set(activity[1] for activity in self.activities))
 
         self.activity_var = tk.StringVar()
 
@@ -24,32 +27,38 @@ class Client:
         return user[0] if user else None
 
     def show_register_interface(self):
-        # Création d'une nouvelle fenêtre Toplevel pour l'inscription
         self.register_window = tk.Toplevel(self.master)
         self.register_window.title("Inscription à une activité")
+        self.register_window.geometry('400x300')
 
-        tk.Label(self.register_window, text="Choisissez une activité pour vous inscrire:").pack(pady=10)
+        self.register_window.configure(background="#332c7a")
 
-        # Utilisation de self.activities et self.activities_names déjà récupérés
-        self.activity_var_register = tk.StringVar(
-            self.register_window)  # Création d'une nouvelle instance de StringVar pour cette interface
+        title = tk.Label(self.register_window, background="#332c7a", foreground="#FFFFFF", font="Arial(12)",
+                         text="Choisissez une activité pour vous inscrire:")
+        title.grid(row=0, column=0, pady=0, padx=10, sticky="EW")
+        title.place(relx=0.5, rely=0.05, anchor=tk.CENTER, width=400)
+
+        self.activity_var_register = tk.StringVar(self.register_window)
         self.combobox_activities_register = ttk.Combobox(self.register_window, textvariable=self.activity_var_register,
                                                          values=self.activities_names)
-        self.combobox_activities_register.pack(pady=5)
+        self.combobox_activities_register.grid(row=1, column=0, pady=10, padx=20, sticky="EW")
+        self.combobox_activities_register.place(relx=0.5, rely=0.2, anchor=tk.CENTER)
 
-        tk.Button(self.register_window, text="S'inscrire", command=self.register_activity_from_register_interface).pack(
-            pady=10)
+        register_button = tk.Button(self.register_window, text="S'inscrire",
+                                    command=self.register_activity_from_register_interface)
+        register_button.grid(row=2, column=0, pady=0, padx=10, sticky="EW")
+        register_button.place(relx=0.5, rely=0.4, anchor=tk.CENTER, width=200)
+
 
     def register_activity_from_register_interface(self):
         selected_activity_name = self.activity_var_register.get()
         selected_activity_id = [activity[0] for activity in self.activities if activity[1] == selected_activity_name][0]
 
-        # Assurez-vous que la requête d'insertion correspond à la structure de votre base de données
         query = "INSERT INTO activity_groups (activity_id, user_id) VALUES (?, ?)"
         execute_query(query, (selected_activity_id, self.user_id))
 
         tk.messagebox.showinfo("Inscription réussie", f"Vous êtes inscrit à l'activité: {selected_activity_name}")
-        self.register_window.destroy()  # Fermeture de la fenêtre d'inscription après succès
+        self.register_window.destroy()
 
     def show_unregister_interface(self):
         self.unregister_window = tk.Toplevel(self.master)
@@ -75,12 +84,10 @@ class Client:
         tk.Button(self.unregister_window, text="Se désinscrire", command=self.unregister_activity).pack(pady=5)
 
     def get_registered_activities(self):
-        # Méthode pour récupérer les activités auxquelles l'utilisateur est inscrit
         query = "SELECT ag.group_id, a.name FROM activity_groups ag JOIN activities a ON ag.activity_id = a.activity_id WHERE ag.user_id = ?"
         return execute_query(query, (self.user_id,)).fetchall()
 
     def unregister_activity(self):
-        # Méthode pour se désinscrire d'une activité sélectionnée
         selected_index = self.activity_listbox.curselection()
         if not selected_index:
             messagebox.showwarning("Sélectionnez une activité",
@@ -91,5 +98,5 @@ class Client:
         query = "DELETE FROM activity_groups WHERE group_id = ?"
         execute_query(query, (group_id,))
 
-        self.show_unregister_interface()  # Mise à jour de l'interface de désinscription
+        self.show_unregister_interface()
         messagebox.showinfo("Désinscription réussie", "Vous avez été désinscrit de l'activité.")
