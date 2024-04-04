@@ -21,13 +21,13 @@ class Accueil:
         main_app_window.config(bg="gray30")
         main_app_window.geometry("400x600")
         # Chargez les images
-        #navIcon = tk.PhotoImage(file='../images/menu.png')
-        #closeIcon = tk.PhotoImage(file='../images/close.png')
-        #fontImage = tk.PhotoImage(file='../images/font.png')
+        navIcon = tk.PhotoImage(file='../images/menu.png')
+        closeIcon = tk.PhotoImage(file='../images/close.png')
+        fontImage = tk.PhotoImage(file='../images/font.png')
         # Note: Pour éviter le garbage collection sur les images, attachez-les à la fenêtre
-        #main_app_window.navIcon = navIcon
-        #main_app_window.closeIcon = closeIcon
-        #main_app_window.fontImage = fontImage
+        main_app_window.navIcon = navIcon
+        main_app_window.closeIcon = closeIcon
+        main_app_window.fontImage = fontImage
         client_instance = Client(main_app_window,user_id)
 
         profil = Profil(main_app_window,user_id)
