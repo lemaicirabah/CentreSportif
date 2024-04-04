@@ -50,9 +50,8 @@ class Payment:
                 (self.user_id, account_number, expiration_date, cvv)
             )
             conn.commit()
-            # Simulate generating a unique invoice number (for demonstration purposes)
             invoice_number = random.randint(10000, 99999)
-            return invoice_number  # Return the fake invoice number for display
+            return invoice_number  
         except Exception as e:
             messagebox.showerror("Database Error", f"An error occurred: {e}")
             return None
