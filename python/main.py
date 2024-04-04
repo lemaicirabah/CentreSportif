@@ -1,8 +1,9 @@
 import tkinter as tk
 from tkinter import ttk, messagebox
-from tkinter import *
+from Profil import Profil
+from Paiement import Payment
+from Facture import Facture
 from client import Client
-from accueil import Accueil
 import database
 
 
@@ -78,14 +79,35 @@ class SportCenterApp(tk.Tk):
             username_entry.get(), password_entry.get(), login_win, self), style="My.TButton").place(relx=0.5, rely=0.5,
                                                                                                     anchor=tk.CENTER)
 
+    def open_main_window(self, user_id):
+        self.withdraw()
+        main_app_window = tk.Toplevel(self.master)
+        main_app_window.title("Centre Sportif")
+        main_app_window.config(bg="gray30")
+        main_app_window.geometry("400x600")
+        client_instance = Client(main_app_window, user_id)
+
+        profil = Profil(main_app_window, user_id)
+
+        tk.Label(main_app_window, text="Choisissez une action :").pack(pady=10)
+        tk.Button(main_app_window, text="Profil", command=profil.open_profile_window).pack(pady=5)
+        tk.Button(main_app_window, text="S'inscrire à une activité",
+                  command=client_instance.show_register_interface).pack(pady=5)
+        tk.Button(main_app_window, text="Se désinscrire d'une activité",
+                  command=client_instance.show_unregister_interface).pack(pady=5)
+        payment_instance = Payment(self.master, user_id)
+        tk.Button(main_app_window, text="Paiement", command=payment_instance.open_payment_window).pack(pady=5)
+        facture_instance = Facture(self.master, user_id)
+        tk.Button(main_app_window, text="Facture", command=facture_instance.display_invoice).pack(pady=5)
+
     def verify_login(self, username, password, window, window1):
         user_id = Client.verify_user(username, password)
         if user_id:
             self.current_user = Client(master=None,
-                                       user_id=user_id)  # Passer None ou une instance appropriée à la place de `None`
+                                       user_id=user_id)
             window.destroy()
             messagebox.showinfo("Login Success", "You are now logged in.")
-            Accueil.open_main_window(self,user_id)  # Ouvrir la fenêtre principale après le login réussi
+            self.open_main_window(self)
         else:
             messagebox.showerror("Login Failed", "Invalid username or password.")
 
@@ -133,6 +155,7 @@ class SportCenterApp(tk.Tk):
         self.main_app_window.withdraw()
         self.deiconify()
         self.current_user = None
+
 
 if __name__ == "__main__":
     database.initialize_db()
