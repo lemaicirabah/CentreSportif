@@ -3,22 +3,23 @@ import sqlite3
 DATABASE_NAME = "sport_center.db"
 
 def connect_db():
-    """Connect to the SQLite database."""
     return sqlite3.connect(DATABASE_NAME)
 
 def initialize_db():
-    """Initialize the database with necessary tables."""
     conn = connect_db()
     cursor = conn.cursor()
-    
+
     cursor.execute('''
     CREATE TABLE IF NOT EXISTS users (
         user_id INTEGER PRIMARY KEY AUTOINCREMENT,
-        nom TEXT NOT NULL UNIQUE,
-        matricule TEXT NOT NULL,
+        prenom TEXT NOT NULL,
+        nom TEXT NOT NULL,
+        username TEXT NOT NULL,
+        password TEXT NOT NULL,
         courriel TEXT NOT NULL UNIQUE,
         adresse TEXT NOT NULL,
-        n_telephone INTEGER NOT NULL
+        n_telephone INTEGER NOT NULL,
+        role TEXT NOT NULL
     )''')
 
     cursor.execute('''
@@ -92,15 +93,19 @@ def initialize_db():
     conn.commit()
     conn.close()
 
-def add_user(nom, matricule, courriel,adresse,n_telephone):
-    """Add a new user to the database."""
+
+def add_user(prenom, nom, username, password, courriel, adresse, n_telephone, role):
     conn = connect_db()
     cursor = conn.cursor()
     cursor.execute('''
-    INSERT INTO users (nom, matricule, courriel,adresse,n_telephone) VALUES (?, ?, ?, ?)
-    ''', (nom, matricule, courriel,adresse,n_telephone))
+    INSERT INTO users (prenom, nom, username, password, courriel, adresse, n_telephone, role) 
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+    ''', (prenom, nom, username, password, courriel, adresse, n_telephone, role))
     conn.commit()
     conn.close()
+
+
+
 
 def register_activity(user_id, activity_id):
     """Register a user for a given activity."""

@@ -11,14 +11,14 @@ class Accueil:
         self.master.title("Main Window")
         tk.Button(master, text="Open New Window", command=self.open_main_window).pack()
 
-    def open_main_window(self, user_id,nom, adresse, courriel, n_telephone):
+    def open_main_window(self, master, nom, prenom, username, user_id, adresse, courriel, n_telephone, role):
         self.withdraw()
         main_app_window = tk.Toplevel(self.master)
         main_app_window.title("Centre Sportif")
         main_app_window.config(bg="#332c7a")
         main_app_window.geometry("400x500")
         main_app_window.resizable(width=False, height=False)
-        client_instance = Client(main_app_window, user_id,nom, adresse, courriel, n_telephone)
+        client_instance = Client(main_app_window, nom, prenom, username, user_id, adresse, courriel, n_telephone, role)
 
         profil = Profil(main_app_window, user_id)
 

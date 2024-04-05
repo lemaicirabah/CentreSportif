@@ -13,18 +13,30 @@ class Profil:
         # Création de la nouvelle fenêtre
         profile_window = tk.Toplevel(self.master)
         profile_window.title("Profil")
-        profile_window.geometry("300x200")
-        profile_window.config(bg="lightgray")
+        profile_window.geometry("400x350")
+        profile_window.resizable(width=False, height=False)
+        profile_window.configure(background="#332c7a")
 
-        # Displaying the profile info
-        tk.Label(profile_window, text="Voici la fenêtre de profil", bg="lightgray").pack(pady=10)
+        title = tk.Label(profile_window, background="#332c7a", foreground="#FFFFFF", text="Your profil",
+                         font=("Arial", 20))
+        title.grid(row=0, column=2, padx=10, pady=10)
+        title.place(relx=0.5, rely=0.1, anchor=tk.CENTER)
+
         if user_info:
-            info_text = f"Name: {user_info['nom']}\nCourriel: {user_info['courriel']}\nAdresse: {user_info['adresse']}\nTelephone: {user_info['telephone']}"
-            tk.Label(profile_window, text=info_text, bg="lightgray").pack(pady=10)
-            tk.Button(profile_window, text="Modifier", command=self.modify_profile).pack(pady=10)
+            info_text = (f"First name: {user_info['prenom']}\n\nLast name: {user_info['nom']}\n\n"
+                         f"Email: {user_info['courriel']}\n\nAddress: {user_info['adresse']}\n\n"
+                         f"Phone number: {user_info['telephone']}")
+            infos = tk.Label(profile_window, text=info_text, background="#332c7a", foreground="#FFFFFF", font=("Arial", 14))
+            infos.grid(row=2, column=2, padx=10, pady=10)
+            infos.place(relx=0.5, rely=0.5, anchor=tk.CENTER)
+
+            edit_button = tk.Button(profile_window, text="Modifier", command=self.modify_profile)
+            edit_button.grid(row=4, column=2, pady=10)
+            edit_button.place(relx=0.5, rely=0.9, anchor=tk.CENTER)
 
         else:
-            tk.Label(profile_window, text="User information not available", bg="lightgray").pack(pady=10)
+            tk.Label(profile_window, text="User information not available", bg="lightgray").grid(row=1, column=1,
+                                                                                                 padx=10, pady=10)
 
     def modify_profile(self):
         # New window for profile modification
@@ -85,12 +97,12 @@ class Profil:
             conn.close()
 
     def get_user_info(self):
-        """Fetch user info from the database based on self.user_id"""
         conn = connect_db()
         cursor = conn.cursor()
-        cursor.execute("SELECT nom, courriel, adresse ,n_telephone FROM users WHERE user_id=?", (self.user_id,))
+        cursor.execute("SELECT prenom, nom, courriel, adresse ,n_telephone FROM users WHERE user_id=?", (self.user_id,))
         user_info = cursor.fetchone()
         conn.close()
         if user_info:
-            return {'nom': user_info[0], 'courriel': user_info[1], 'adresse': user_info[2] ,  'telephone': user_info[3]}
+            return {'prenom': user_info[0], 'nom': user_info[1], 'courriel': user_info[2], 'adresse': user_info[3],
+                    'telephone': user_info[4]}
         return None

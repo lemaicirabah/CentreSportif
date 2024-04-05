@@ -5,15 +5,16 @@ from activite import Activities
 
 
 class Client:
-    def __init__(self, master, user_id, nom, adresse, courriel, n_telephone):
+    def __init__(self, master, nom, prenom, username, user_id, adresse, courriel, n_telephone, role):
         self.master = master
-        self.user_id = user_id
-
         self.nom = nom
+        self.prenom = prenom
+        self.username = username
+        self.user_id = user_id
         self.adresse = adresse
         self.courriel = courriel
-        self.n0_telephone = n_telephone
-
+        self.n_telephone = n_telephone
+        self.role = role
 
         self.activities = Activities.get_activities()
         self.activities_names = list(set(activity[1] for activity in self.activities))
@@ -21,9 +22,9 @@ class Client:
         self.activity_var = tk.StringVar()
 
     @staticmethod
-    def verify_user(nom, matricule):
-        query = "SELECT user_id FROM users WHERE nom=? AND matricule=?"
-        user = execute_query(query, (nom, matricule)).fetchone()
+    def verify_user(courriel, password):
+        query = "SELECT user_id FROM users WHERE courriel=? AND password=?"
+        user = execute_query(query, (courriel, password)).fetchone()
         return user[0] if user else None
 
     def show_register_interface(self):
