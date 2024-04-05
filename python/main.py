@@ -95,7 +95,6 @@ class SportCenterApp(tk.Tk):
             Accueil.open_main_window(self, self.master, nom=None, prenom=None, username=None, user_id=user_id,
                                      adresse=None, courriel=None, n_telephone=None, role=None)
 
-
         else:
             messagebox.showerror("Login Failed", "Invalid username or password.")
 
@@ -166,6 +165,7 @@ class SportCenterApp(tk.Tk):
 
 
 if __name__ == "__main__":
+    database.reset_activities_table()
     database.initialize_db()
     app = SportCenterApp()
     app.mainloop()

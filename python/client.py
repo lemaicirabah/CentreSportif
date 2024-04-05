@@ -17,7 +17,7 @@ class Client:
         self.role = role
 
         self.activities = Activities.get_activities()
-        self.activities_names = list(set(activity[1] for activity in self.activities))
+        self.activities_names = [activity[0] for activity in self.activities]
 
         self.activity_var = tk.StringVar()
 
@@ -29,13 +29,13 @@ class Client:
 
     def show_register_interface(self):
         self.register_window = tk.Toplevel(self.master)
-        self.register_window.title("Inscription à une activité")
+        self.register_window.title("Registration for an activity")
         self.register_window.geometry('400x300')
 
         self.register_window.configure(background="#332c7a")
 
         title = tk.Label(self.register_window, background="#332c7a", foreground="#FFFFFF", font="Arial(12)",
-                         text="Choisissez une activité pour vous inscrire:")
+                         text="Choose an activity to register:")
         title.grid(row=0, column=0, pady=0, padx=10, sticky="EW")
         title.place(relx=0.5, rely=0.05, anchor=tk.CENTER, width=400)
 
@@ -45,47 +45,60 @@ class Client:
         self.combobox_activities_register.grid(row=1, column=0, pady=10, padx=20, sticky="EW")
         self.combobox_activities_register.place(relx=0.5, rely=0.2, anchor=tk.CENTER)
 
-        register_button = tk.Button(self.register_window, text="S'inscrire",
+        register_button = tk.Button(self.register_window, text="Register",
                                     command=self.register_activity_from_register_interface)
         register_button.grid(row=2, column=0, pady=0, padx=10, sticky="EW")
         register_button.place(relx=0.5, rely=0.4, anchor=tk.CENTER, width=200)
 
-
     def register_activity_from_register_interface(self):
         selected_activity_name = self.activity_var_register.get()
-        selected_activity_id = [activity[0] for activity in self.activities if activity[1] == selected_activity_name][0]
 
-        query = "INSERT INTO activity_groups (activity_id, user_id) VALUES (?, ?)"
-        execute_query(query, (selected_activity_id, self.user_id))
+        selected_activity_info = None
+        for activity in self.activities:
+            if activity[0] == selected_activity_name:
+                selected_activity_info = activity
+                break
+        print(selected_activity_info)
 
-        tk.messagebox.showinfo("Inscription réussie", f"Vous êtes inscrit à l'activité: {selected_activity_name}")
+        query = ("INSERT INTO activity_groups (user_id, activity_name, jour, start_time, end_time, group_id) "
+                 "VALUES (?, ?, ?, ?, ?, '1')")
+        execute_query(query, (self.user_id, selected_activity_info[0], selected_activity_info[2],
+                              selected_activity_info[3], selected_activity_info[4]))
+
+        tk.messagebox.showinfo("successful registration", f"You are registered for the activity: {selected_activity_name}")
         self.register_window.destroy()
 
     def show_unregister_interface(self):
-        self.unregister_window = tk.Toplevel(self.master)
-        self.unregister_window.title("Se désinscrire d'une activité")
+        unregister_window = tk.Toplevel(self.master)
+        unregister_window.title("Unsubscribe")
+        unregister_window.iconbitmap('icon.ico')
+        unregister_window.geometry('400x300')
+        unregister_window.resizable(width=False, height=False)
+        unregister_window.configure(background="#332c7a")
 
-        self.registered_activities = self.get_registered_activities()
-        if not self.registered_activities:
-            tk.Label(self.unregister_window, text="Aucune activité inscrite.").pack(pady=10)
+        registered_activities = self.get_registered_activities()
+
+        if not registered_activities:
+            tk.Label(unregister_window, text="Aucune activité inscrite.").pack(pady=10)
             return
 
-        self.activity_listbox = tk.Listbox(self.unregister_window)
-        self.activity_listbox.pack(pady=10)
+        activity_listbox = tk.Listbox(unregister_window)
+        activity_listbox.pack(pady=10)
 
-        for activity in self.registered_activities:
+        for activity in registered_activities:
             activity_str = f"{activity[1]}"
             if len(activity) > 2:
                 activity_str += f" ({activity[2]}"
                 if len(activity) > 3:
                     activity_str += f" - {activity[3]}"
                 activity_str += ")"
-            self.activity_listbox.insert(tk.END, activity_str)
+            activity_listbox.insert(tk.END, activity_str)
 
-        tk.Button(self.unregister_window, text="Se désinscrire", command=self.unregister_activity).pack(pady=5)
+        tk.Button(unregister_window, text="Unsubscribe", command=self.unregister_activity).pack(pady=5)
 
     def get_registered_activities(self):
-        query = "SELECT ag.group_id, a.name FROM activity_groups ag JOIN activities a ON ag.activity_id = a.activity_id WHERE ag.user_id = ?"
+        query = ("SELECT * FROM activity_groups ag JOIN activities a ON ag.activity_name = a.activity_name "
+                 "WHERE ag.user_id = ?")
         return execute_query(query, (self.user_id,)).fetchall()
 
     def unregister_activity(self):

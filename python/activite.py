@@ -4,10 +4,14 @@ from tkinter import ttk, messagebox
 
 
 class Activities:
-    def __init__(self, client, activity_id, activity_name):
+    def __init__(self, client, activity_id, activity_name, jour, start_time, end_time):
         self.client = client
         self.activity_id = activity_id
-        activity_name = activity_name
+        self.activity_name = activity_name
+        self.jour = jour
+        self.start_time = start_time
+        self.end_time = end_time
+
 
     def open_activite_window():
         activite_window = tk.Toplevel()
@@ -22,13 +26,22 @@ class Activities:
 
     @staticmethod
     def get_activities():
-        query = "SELECT activity_id, name FROM activities"
+        query = "SELECT activity_name, description, jour, start_time, end_time FROM activities"
         activities = execute_query(query).fetchall()
         return activities
 
     @staticmethod
+    def get_activity_by_name(self, activity_name):
+        query = "SELECT * FROM activities WHERE activity_name = ?"
+        activity = execute_query(query, (activity_name,)).fetchone()
+        if activity:
+            return activity
+        else:
+            return None
+
+    @staticmethod
     def insert_activities(activities_to_insert):
-        query = "INSERT INTO activities (name, description, min_participants, max_participants) VALUES (?, ?, ?, ?)"
+        query = "INSERT INTO activities (activity_name, description, min_participants, max_participants) VALUES (?, ?, ?, ?)"
         execute_query(query, activities_to_insert)
 
     def sign_up_for_activity(self):
