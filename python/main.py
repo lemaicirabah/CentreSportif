@@ -109,8 +109,8 @@ class SportCenterApp(tk.Tk):
         title = ttk.Label(reg_win, style="My.TLabel", text="all fields below are required",
                           font=("Arial", 12))
         title.grid(row=0, column=1, padx=10, pady=10)
-
         ttk.Label(reg_win, style="My.TLabel", text="First name:").grid(row=1, column=0, padx=10, pady=10)
+
         first_name_entry = ttk.Entry(reg_win, font=("Arial", 14), width=20)
         first_name_entry.grid(row=1, column=1, padx=10, pady=10)
 
