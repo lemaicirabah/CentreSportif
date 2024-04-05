@@ -23,43 +23,63 @@ def initialize_db():
     )''')
 
     cursor.execute('''
-    CREATE TABLE IF NOT EXISTS activities (
-        activity_id INTEGER PRIMARY KEY AUTOINCREMENT,
-        name TEXT NOT NULL,
-        description TEXT,
-        heure_debut INTEGER,
-        heure_fin INTEGER
+    CREATE TABLE IF NOT EXISTS groupe (
+        id_group INTEGER PRIMARY KEY NOT NULL ,
+        activity_id INTEGER NOT NULL NOT NULL,
+        FOREIGN KEY (activity_id) REFERENCES activities(activity_id)
     )''')
 
-    
     cursor.execute('''
-        INSERT INTO activities (name, description, heure_debut,heure_fin)
+    CREATE TABLE IF NOT EXISTS activities (
+        activity_id INTEGER PRIMARY KEY NOT NULL ,
+        name TEXT NOT NULL,
+        description TEXT
+    )''')
+
+    cursor.execute('''
+        INSERT INTO activities (name, description)
         VALUES 
-        ('Karate', 'Karate Description', 10, 12),
-        ('Taekwondo', 'Taekwondo Description', 12, 13),
-        ('Golf', 'Golf LOL', 15, 16),
-        ('Basketball', 'Basketball Description', 8, 10)
+        ('Karate', 'Discipline japonaise enseigné par un maitre japonais'),
+        ('Taekwondo', 'Discipline coréenne'),
+        ('Golf', 'Le prestigieux sport américain'),
+        ('Basketball', 'Meilleur sport collectif')
     ''')
 
-    
     cursor.execute('''
-    CREATE TABLE IF NOT EXISTS activity_groups (
-        group_id INTEGER PRIMARY KEY AUTOINCREMENT,
+        CREATE TABLE IF NOT EXISTS activity_groups (
+            group_id INTEGER NOT NULL,
+            user_id INTEGER NOT NULL,
+            activity_id INTEGER NOT NULL,
+            start_time DATETIME NOT NULL,
+            end_time DATETIME NOT NULL,
+            PRIMARY KEY (group_id, user_id, activity_id),
+            FOREIGN KEY(activity_id) REFERENCES activities(activity_id),
+            FOREIGN KEY(user_id) REFERENCES users(user_id)
+        )''')
+
+    cursor.execute('''
+    CREATE TABLE IF NOT EXISTS registrations (
+        user_id INTEGER NOT NULL,
+        group_id INTEGER NOT NULL,
         activity_id INTEGER NOT NULL,
-        start_time DATETIME NOT NULL,
-        end_time DATETIME NOT NULL,
-        FOREIGN KEY(activity_id) REFERENCES activities(activity_id)
+        status TEXT NOT NULL,
+        PRIMARY KEY (user_id, group_id, activity_id),
+        FOREIGN KEY(user_id) REFERENCES activity_groups(user_id),
+        FOREIGN KEY(group_id) REFERENCES activity_groups(group_id),
+        FOREIGN KEY (activity_id) REFERENCES activity_groups(activity_id)
     )''')
 
     cursor.execute('''
-    CREATE TABLE IF NOT EXISTS payment_info (
-        payment_id INTEGER PRIMARY KEY AUTOINCREMENT,
-        user_id INTEGER NOT NULL,
-        account_number TEXT NOT NULL,
-        expiration_date TEXT NOT NULL,
-        cvv TEXT NOT NULL,
-        FOREIGN KEY(user_id) REFERENCES users(user_id)
-    )''')
+    CREATE TABLE IF NOT EXISTS invoice(
+    invoice_id INTEGER PRIMARY KEY NOT NULL,
+    user_id INTEGER NOT NULL,
+    activity_id INTEGER NOT NULL,
+    monthly_month FLOAT NOT NULL,
+    invoice_date DATE NOTT NULL,
+    FOREIGN KEY (user_id) REFERENCES registrations(user_id),
+    FOREIGN KEY (activity_id) REFERENCES registrations(activity_id)
+    )
+    ''')
 
     cursor.execute('''
     CREATE TABLE IF NOT EXISTS payments (
@@ -71,15 +91,7 @@ def initialize_db():
         FOREIGN KEY(user_id) REFERENCES users(user_id)
     )''')
 
-    cursor.execute('''
-    CREATE TABLE IF NOT EXISTS registrations (
-        registration_id INTEGER PRIMARY KEY AUTOINCREMENT,
-        user_id INTEGER NOT NULL,
-        group_id INTEGER NOT NULL,
-        status TEXT NOT NULL,
-        FOREIGN KEY(user_id) REFERENCES users(user_id),
-        FOREIGN KEY(group_id) REFERENCES activity_groups(group_id)
-    )''')
+
 
     cursor.execute('''
     CREATE TABLE IF NOT EXISTS payments (
@@ -144,7 +156,6 @@ def verify_user(nom, matricule):
 
 
 def execute_query(query, params=(), commit=False):
-    """Execute a given SQL query with optional parameters and commit the changes."""
     with connect_db() as conn:
         cursor = conn.cursor()
         if params:

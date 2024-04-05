@@ -75,11 +75,11 @@ class SportCenterApp(tk.Tk):
         password_entry = ttk.Entry(login_win, show="*", font=("Arial", 14))
         password_entry.place(relx=0.55, rely=0.4, anchor=tk.CENTER)
         ttk.Button(login_win, text="Login", command=lambda: self.verify_login(
-            username_entry.get(), password_entry.get(), login_win, self), style="My.TButton").place(relx=0.5, rely=0.5,
+            username_entry.get(), password_entry.get(), login_win), style="My.TButton").place(relx=0.5, rely=0.5,
                                                                                                     anchor=tk.CENTER)
 
-    def verify_login(self, courriel, password, window, window1):
-        user_id = Client.verify_user(courriel, password)
+    def verify_login(self, username, password, window):
+        user_id = Client.verify_user(username, password)
         if user_id:
             self.current_user = Client(master=None,
                                        nom=None,

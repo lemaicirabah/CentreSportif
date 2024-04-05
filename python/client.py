@@ -22,9 +22,9 @@ class Client:
         self.activity_var = tk.StringVar()
 
     @staticmethod
-    def verify_user(courriel, password):
-        query = "SELECT user_id FROM users WHERE courriel=? AND password=?"
-        user = execute_query(query, (courriel, password)).fetchone()
+    def verify_user(username, password):
+        query = "SELECT user_id FROM users WHERE username=? AND password=?"
+        user = execute_query(query, (username, password)).fetchone()
         return user[0] if user else None
 
     def show_register_interface(self):
