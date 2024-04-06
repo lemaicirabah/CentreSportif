@@ -61,6 +61,8 @@ class Accueil:
         invoice_button.bind("<Button-1>", lambda event, button=invoice_button: on_click(event, button))
         invoice_button.configure(background="#FFFFFF")
 
+        main_app_window.protocol("WM_DELETE_WINDOW", lambda: main_app_window.destroy())
+
 
 def on_hover(event, button):
     button.config(background="#ffff66", foreground="#000000")

@@ -69,6 +69,14 @@ class Client:
                  "VALUES (?, ?, ?, ?, ?, '1')")
         execute_query(query, (self.user_id, selected_activity_info[0], selected_activity_info[2],
                               selected_activity_info[3], selected_activity_info[4]))
+        query = ("INSERT INTO registrations (user_id, group_id, activity_name, status)"
+                 "VALUES (?, '1', ?, 'INCOMPLET')")
+        execute_query(query, (self.user_id, selected_activity_info[0]))
+
+        query = ("INSERT INTO invoice (user_id, activity_name, monthly_amount, invoice_date)"
+                 "VALUES(?, ?, ?, '2024-04-05' )")
+
+        execute_query(query, (self.user_id, selected_activity_info[0], selected_activity_info[5]))
 
         tk.messagebox.showinfo("successful registration", f"You are registered for the activity: {selected_activity_name}")
         self.register_window.destroy()
@@ -84,13 +92,16 @@ class Client:
         self.activity_listbox = tk.Listbox(self.unregister_window, background="#332c7a", foreground="#FFFFFF",
                                            font=("Arial", 12))
         self.activity_listbox.grid(row=0, column=1, padx=10, pady=10)
+        self.activity_listbox.place(relx=0.5, rely=0.5, anchor=tk.CENTER, width=400)
 
         registered_activities = self.get_registered_activities()
 
         if not registered_activities:
             no_activities_label = ttk.Label(self.unregister_window, background="#332c7a", foreground="#FFFFFF",
-                                            text="you are not registered for any activity", font=("Arial", 12))
+                                            text="no activity in your list \U0001F611", font=("Arial", 14))
             no_activities_label.grid(row=0, column=1, padx=10, pady=10)
+            no_activities_label.place(relx=0.7, rely=0.5, anchor=tk.CENTER, width=400)
+
             return
 
         for activity in registered_activities:
@@ -117,6 +128,11 @@ class Client:
     def unregister_activity(self, user_id, activity_name):
         print("USER_ID", user_id, "ACTIVITY_NAME", activity_name)
         query = "DELETE FROM activity_groups WHERE user_id = ? AND activity_name = ?"
+        execute_query(query, (user_id, activity_name))
+        query = "DELETE FROM registrations WHERE user_id = ? AND activity_name = ?"
+        execute_query(query, (user_id, activity_name))
+
+        query = "DELETE FROM invoice WHERE user_id = ? AND activity_name = ?"
         execute_query(query, (user_id, activity_name))
 
         selected_index = self.activity_listbox.curselection()

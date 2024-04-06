@@ -58,14 +58,14 @@ def initialize_db():
     )''')
 
     cursor.execute('''
-    CREATE TABLE IF NOT EXISTS invoice(
-    invoice_id INTEGER PRIMARY KEY NOT NULL,
-    user_id INTEGER NOT NULL,
-    activity_name TEXT NOT NULL,
-    monthly_month FLOAT NOT NULL,
-    invoice_date DATE NOTT NULL,
-    FOREIGN KEY (user_id) REFERENCES registrations(user_id),
-    FOREIGN KEY (activity_name) REFERENCES registrations(activity_name)
+    CREATE TABLE IF NOT EXISTS invoice (
+        user_id INTEGER NOT NULL,
+        activity_name TEXT NOT NULL,
+        monthly_amount FLOAT NOT NULL,
+        invoice_date DATE NOT NULL,
+        PRIMARY KEY (user_id, activity_name),
+        FOREIGN KEY (user_id) REFERENCES registrations(user_id),
+        FOREIGN KEY (activity_name) REFERENCES registrations(activity_name)
     )
     ''')
 
@@ -73,19 +73,10 @@ def initialize_db():
     CREATE TABLE IF NOT EXISTS payments (
         payment_id INTEGER PRIMARY KEY AUTOINCREMENT,
         invoice_id INTEGER NOT NULL,
-        account_number TEXT NOT NULL,
+        account_number INTEGER NOT NULL,
         amount DECIMAL(10, 2) NOT NULL,
         paid_at DATETIME NOT NULL,
         FOREIGN KEY(invoice_id) REFERENCES invoice(invoice_id)
-    )''')
-
-    cursor.execute('''
-    CREATE TABLE IF NOT EXISTS payments (
-        payment_id INTEGER PRIMARY KEY AUTOINCREMENT,
-        registration_id INTEGER NOT NULL,
-        amount DECIMAL(10, 2) NOT NULL,
-        paid_at DATETIME,
-        FOREIGN KEY(registration_id) REFERENCES registrations(registration_id)
     )''')
 
     conn.commit()
@@ -104,16 +95,17 @@ def reset_activities_table():
         description TEXT,
         jour TEXT CHECK (jour IN ('lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi', 'dimanche')),
         start_time TIME NOT NULL,
-        end_time TIME NOT NULL
+        end_time TIME NOT NULL,
+        activity_price float NOT NULL
     )''')
 
     cursor.execute('''
-        INSERT INTO activities (activity_name, description, jour, start_time, end_time)
+        INSERT INTO activities
         VALUES 
-        ('Karate', 'Discipline japonaise enseignée par un maître japonais', 'vendredi', '13:00:00', '16:00:00'),
-        ('Taekwondo', 'Discipline coréenne', 'mercredi', '18:00:00', '20:30:00'),
-        ('Golf', 'Le prestigieux sport américain', 'dimanche', '15:30:00', '18:00:00'),
-        ('Basketball', 'Meilleur sport collectif', 'samedi', '14:00:00', '19:00:00')
+        ('Karate', 'Discipline japonaise enseignée par un maître japonais', 'vendredi', '13:00:00', '16:00:00', '45.00'),
+        ('Taekwondo', 'Discipline coréenne', 'mercredi', '18:00:00', '20:30:00', '39.99'),
+        ('Golf', 'Le prestigieux sport américain', 'dimanche', '15:30:00', '18:00:00', '85.00'),
+        ('Basketball', 'Meilleur sport collectif', 'samedi', '14:00:00', '19:00:00', '59.99')
     ''')
 
     conn.commit()

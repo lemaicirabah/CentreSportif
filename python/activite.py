@@ -4,13 +4,14 @@ from tkinter import ttk, messagebox
 
 
 class Activities:
-    def __init__(self, client, activity_id, activity_name, jour, start_time, end_time):
+    def __init__(self, client, activity_id, activity_name, jour, start_time, end_time, activity_price):
         self.client = client
         self.activity_id = activity_id
         self.activity_name = activity_name
         self.jour = jour
         self.start_time = start_time
         self.end_time = end_time
+        self.activity_price = activity_price
 
 
     def open_activite_window():
@@ -26,7 +27,7 @@ class Activities:
 
     @staticmethod
     def get_activities():
-        query = "SELECT activity_name, description, jour, start_time, end_time FROM activities"
+        query = "SELECT activity_name, description, jour, start_time, end_time, activity_price FROM activities"
         activities = execute_query(query).fetchall()
         return activities
 
