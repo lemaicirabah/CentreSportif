@@ -6,6 +6,9 @@ class Facture:
     def __init__(self, master, user_id):
         self.master = master
         self.user_id = user_id
+        #self.activity_name = activity_name
+        #self.monthly_amount = monthly_amount
+        #self.invoice_date = invoice_date
 
     def display_invoice(self):
         invoice_details = self.fetch_invoice_details()

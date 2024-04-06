@@ -12,6 +12,7 @@ class Client:
         self.activity_var_register = None
         self.register_window = None
         self.master = master
+
         self.nom = nom
         self.prenom = prenom
         self.username = username
@@ -23,7 +24,6 @@ class Client:
 
         self.activities = Activities.get_activities()
         self.activities_names = [activity[0] for activity in self.activities]
-
         self.activity_var = tk.StringVar()
 
     @staticmethod
