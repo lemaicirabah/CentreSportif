@@ -34,6 +34,7 @@ class Client:
 
     def show_register_interface(self):
         self.register_window = tk.Toplevel(self.master)
+        self.register_window.iconbitmap('icon.ico')
         self.register_window.title("Registration for an activity")
         self.register_window.geometry('400x300')
 

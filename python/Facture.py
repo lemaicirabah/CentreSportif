@@ -12,7 +12,8 @@ class Facture:
         if invoice_details:
             invoice_window = tk.Toplevel(self.master)
             invoice_window.title("Invoice Details")
-            invoice_window.geometry("400x600")
+            invoice_window.iconbitmap('icon.ico')
+            invoice_window.geometry("400x500")
             invoice_window.configure(background="#332c7a")
 
             for invoice_detail in invoice_details:

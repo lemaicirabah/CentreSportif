@@ -17,6 +17,7 @@ class Accueil:
         main_app_window.title("Centre Sportif")
         main_app_window.config(bg="#332c7a")
         main_app_window.geometry("400x500")
+        main_app_window.iconbitmap('icon.ico')
         main_app_window.resizable(width=False, height=False)
         client_instance = Client(main_app_window, nom, prenom, username, user_id, adresse, courriel, n_telephone, role)
 

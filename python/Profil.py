@@ -14,6 +14,7 @@ class Profil:
         profile_window = tk.Toplevel(self.master)
         profile_window.title("Profil")
         profile_window.geometry("400x350")
+        profile_window.iconbitmap('icon.ico')
         profile_window.resizable(width=False, height=False)
         profile_window.configure(background="#332c7a")
 
@@ -44,53 +45,67 @@ class Profil:
         mod_window.title("Modify Profile")
         mod_window.geometry("300x400")
         mod_window.config(bg="lightgray")
+        mod_window.configure(background="#332c7a")
 
-        tk.Label(mod_window, text="Nouveau Nom:", bg="lightgray").pack(pady=(10, 0))
-        username_entry = tk.Entry(mod_window)
-        username_entry.pack(pady=(0, 20))
+        new_password_label = tk.Label(mod_window, text="New password:", background="#332c7a", foreground="#FFFFFF",
+                                      font=("Arial", 14))
+        new_password_label.grid(row=0, column=0, pady=0, padx=10, sticky="EW")
+        new_password_entry = tk.Entry(mod_window, font=("Arial", 14))
+        new_password_entry.grid(row=1, column=0, pady=0, padx=10, sticky="EW")
 
-        tk.Label(mod_window, text="Nouveau Courriel:", bg="lightgray").pack(pady=(10, 0))
-        email_entry = tk.Entry(mod_window)
-        email_entry.pack(pady=(0, 20))
+        new_email_label = tk.Label(mod_window, text="New Email:", background="#332c7a", foreground="#FFFFFF",
+                                   font=("Arial", 14))
+        new_email_label.grid(row=2, column=0, pady=0, padx=10, sticky="EW")
+        new_email_entry = tk.Entry(mod_window, font=("Arial", 14))
+        new_email_entry.grid(row=3, column=0, pady=0, padx=10, sticky="EW")
 
-        tk.Label(mod_window, text="Confirme Matricule", bg="lightgray").pack(pady=(10, 0))
-        pass_entry = tk.Entry(mod_window, show="*")
-        pass_entry.pack(pady=(0, 20))
+        new_address_label = tk.Label(mod_window, text="New address:", background="#332c7a", foreground="#FFFFFF",
+                                     font=("Arial", 14))
+        new_address_label.grid(row=4, column=0, pady=0, padx=10, sticky="EW")
+        new_address_entry = tk.Entry(mod_window, font=("Arial", 14))
+        new_address_entry.grid(row=5, column=0, pady=0, padx=10, sticky="EW")
 
-        tk.Label(mod_window, text="Nouvelle Adresse:", bg="lightgray").pack(pady=(10, 0))
-        adresse_entry = tk.Entry(mod_window)
-        adresse_entry.pack(pady=(0, 20))
+        new_phone_number_label = tk.Label(mod_window, text="New phone number:", background="#332c7a", foreground="#FFFFFF",
+                                          font=("Arial", 14))
+        new_phone_number_label.grid(row=6, column=0, pady=0, padx=10, sticky="EW")
+        new_phone_number_entry = tk.Entry(mod_window, font=("Arial", 14))
+        new_phone_number_entry.grid(row=7, column=0, pady=0, padx=10, sticky="EW")
 
-        tk.Label(mod_window, text="Nouveau Telephone:", bg="lightgray").pack(pady=(10, 0))
-        telephone_entry = tk.Entry(mod_window)
-        telephone_entry.pack(pady=(0, 20))
-
-        tk.Button(mod_window, text="Submit",
-                  command=lambda: self.submit_modifications(username_entry.get(), email_entry.get(), pass_entry.get(),
-                                                            adresse_entry.get(),
-                                                            telephone_entry.get(),
-                                                            mod_window)).pack(pady=(0, 10))
+        submit_button = tk.Button(mod_window, text="Submit", command=lambda: self.submit_modifications(
+            new_password_entry.get(), new_email_entry.get(), new_address_entry.get(), new_phone_number_entry.get(),
+            self.master))
+        submit_button.grid(row=8, column=0, pady=0, padx=10, sticky="EW")
 
     def verify_password(self, entered_password, stored_password_hash):
         return entered_password == stored_password_hash
 
-    def submit_modifications(self, new_username, new_email, entered_password,new_adresse,new_telephone, window):
+    def submit_modifications(self, new_password, new_email, new_address, new_phone_number, window):
         conn = connect_db()
         cursor = conn.cursor()
 
-        cursor.execute("SELECT matricule FROM users WHERE user_id=?", (self.user_id,))
-        current_password_hash = cursor.fetchone()[0]  # Assuming passwords are hashed
-
-        if not self.verify_password(entered_password, current_password_hash):
-            tk.messagebox.showerror("Error", "Password incorrect. Identity verification failed.")
-            return
-
         try:
-            cursor.execute("UPDATE users SET nom=?, courriel=? , adresse=?, n_telephone=? WHERE user_id=?",
-                           (new_username, new_email,new_adresse,new_telephone, self.user_id))
-            conn.commit()
-            tk.messagebox.showinfo("Success", "Profile updated successfully!")
-            window.destroy()  # Close the modification window
+            update_values = []
+            if new_password:
+                update_values.append(("password", new_password))
+            if new_email:
+                update_values.append(("courriel", new_email))
+            if new_address:
+                update_values.append(("adresse", new_address))
+            if new_phone_number:
+                update_values.append(("n_telephone", new_phone_number))
+
+            if update_values:
+                set_clause = ", ".join([f"{field} = ?" for field, _ in update_values])
+                update_query = f"UPDATE users SET {set_clause} WHERE user_id=?"
+                params = [value for _, value in update_values]
+                params.append(self.user_id)
+                cursor.execute(update_query, params)
+                conn.commit()
+                tk.messagebox.showinfo("Success", "Profile updated successfully!")
+            else:
+                tk.messagebox.showinfo("Info", "No changes to update.")
+
+            window.destroy()
         except Exception as e:
             tk.messagebox.showerror("Error", f"Failed to update profile: {e}")
         finally:
