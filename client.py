@@ -6,6 +6,7 @@ from activite import Activities
 
 class Client:
     def __init__(self, master, nom, prenom, username, user_id, adresse, courriel, n_telephone, role):
+        self.schedule_window = None
         self.unregister_window = None
         self.selected_activity_name = None
         self.activity_listbox = None
@@ -79,7 +80,8 @@ class Client:
 
         execute_query(query, (self.user_id, selected_activity_info[0], selected_activity_info[5]))
 
-        tk.messagebox.showinfo("successful registration", f"You are registered for the activity: {selected_activity_name}")
+        tk.messagebox.showinfo("successful registration",
+                               f"You are registered for the activity: {selected_activity_name}")
         self.register_window.destroy()
 
     def show_unregister_interface(self):
@@ -113,6 +115,36 @@ class Client:
                                       command=lambda: self.handle_unsubscribe())
         unregister_button.grid(row=1, column=0, padx=10, pady=10, sticky="EW")
 
+    def show_personal_schedule(self):
+        self.schedule_window = tk.Toplevel(self.master)
+        self.schedule_window.title("Scheduling")
+        self.schedule_window.iconbitmap('icon.ico')
+        self.schedule_window.geometry('400x300')
+        self.schedule_window.resizable(width=False, height=False)
+        self.schedule_window.configure(background="#332c7a")
+        registered_activities = self.get_registered_activities()
+
+        self.schedule_listbox = tk.Listbox(self.schedule_window, background="#332c7a", foreground="#FFFFFF",
+                                           font=("Arial", 12))
+        self.schedule_listbox.grid(row=0, column=1, padx=10, pady=10)
+        self.schedule_listbox.place(relx=0.5, rely=0.5, anchor=tk.CENTER, width=400)
+
+        if not registered_activities:
+            no_schedule_label = ttk.Label(self.unregister_window, background="#332c7a", foreground="#FFFFFF",
+                                          text="You are not registered\n in any activity \U0001F611",
+                                          font=("Arial", 14))
+            no_schedule_label.grid(row=0, column=1, padx=10, pady=10)
+            no_schedule_label.place(relx=0.7, rely=0.5, anchor=tk.CENTER, width=400)
+
+            return
+        self.schedule_listbox.insert(0, "{:25} {:10} {:15} {:15}".format("Activity name", "Day", "Start time",
+                                                                         "End time"))
+        self.schedule_listbox.insert(1, "")
+        for activity in registered_activities:
+            self.schedule_listbox.insert(tk.END,
+                                         "{:25} {:10} {:15} {:15}".format(activity[2], activity[3], activity[4],
+                                                                          activity[5]))
+
     def get_registered_activities(self):
         query = ("SELECT * FROM activity_groups ag JOIN activities a ON ag.activity_name = a.activity_name "
                  "WHERE ag.user_id = ?")
@@ -127,7 +159,6 @@ class Client:
             self.unregister_activity(self.user_id, activity_name)
 
     def unregister_activity(self, user_id, activity_name):
-        print("USER_ID", user_id, "ACTIVITY_NAME", activity_name)
         query = "DELETE FROM activity_groups WHERE user_id = ? AND activity_name = ?"
         execute_query(query, (user_id, activity_name))
         query = "DELETE FROM registrations WHERE user_id = ? AND activity_name = ?"
@@ -142,4 +173,3 @@ class Client:
 
         messagebox.showinfo("Unsubscribe done !", "You have been unsubscribed from the activity.")
         self.unregister_window.destroy()
-

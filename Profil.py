@@ -7,7 +7,6 @@ class Profil:
         self.master = master
         self.user_id = user_id
 
-
     def open_profile_window(self):
         user_info = self.get_user_info()
 
