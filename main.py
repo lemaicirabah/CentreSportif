@@ -158,11 +158,6 @@ class SportCenterApp(tk.Tk):
 
         ttk.Label(reg_win, style="My.TLabel", text="").grid(row=9, column=2, padx=10)
 
-    def logout(self):
-        self.main_app_window.withdraw()
-        self.deiconify()
-        self.current_user = None
-
 
 if __name__ == "__main__":
     database.reset_activities_table()

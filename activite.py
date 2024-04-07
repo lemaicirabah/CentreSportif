@@ -13,18 +13,6 @@ class Activities:
         self.end_time = end_time
         self.activity_price = activity_price
 
-
-    def open_activite_window():
-        activite_window = tk.Toplevel()
-        activite_window.title("Profil")
-        activite_window.geometry("300x200")
-        activite_window.config(bg="lightgray")
-
-        # Ajout d'un texte ou d'autres widgets selon les besoins
-        user_id = 1  # Exemple, vous devrez remplacer cela par l'ID réel de l'utilisateur connecté
-
-        # Initialisation de l'interface d'inscription à une activité
-
     @staticmethod
     def get_activities():
         query = "SELECT activity_name, description, jour, start_time, end_time, activity_price FROM activities"

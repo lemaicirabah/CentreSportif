@@ -28,8 +28,8 @@ def initialize_db():
     cursor.execute('''
     CREATE TABLE IF NOT EXISTS groupe (
         id_group INTEGER PRIMARY KEY NOT NULL ,
-        activity_id INTEGER NOT NULL NOT NULL,
-        FOREIGN KEY (activity_id) REFERENCES activities(activity_id)
+        activity_name INTEGER NOT NULL NOT NULL,
+        FOREIGN KEY (activity_name) REFERENCES activities(activity_name)
     )''')
 
     cursor.execute('''
@@ -54,7 +54,7 @@ def initialize_db():
         PRIMARY KEY (user_id, group_id, activity_name),
         FOREIGN KEY(user_id) REFERENCES activity_groups(user_id),
         FOREIGN KEY(group_id) REFERENCES activity_groups(group_id),
-        FOREIGN KEY (activity_name) REFERENCES activity_groups(activity_id)
+        FOREIGN KEY (activity_name) REFERENCES activity_groups(activity_name)
     )''')
 
     cursor.execute('''
@@ -126,7 +126,7 @@ def add_user(prenom, nom, username, password, courriel, adresse, n_telephone, ro
 def register_activity(user_id, activity_id):
     conn = connect_db()
     cursor = conn.cursor()
-    cursor.execute("INSERT INTO registrations (user_id, activity_id, status) VALUES (?, ?, 'registered')",
+    cursor.execute("INSERT INTO registrations (user_id, activity_name, status) VALUES (?, ?, 'registered')",
                    (user_id, activity_id))
     conn.commit()
     conn.close()
@@ -136,7 +136,7 @@ def pay_for_activity(registration_id, amount):
     conn = connect_db()
     cursor = conn.cursor()
     cursor.execute('''
-    INSERT INTO payments (registration_id, amount, paid_at) VALUES (?, ?, datetime('now'))
+    INSERT INTO payments (payment_id, amount, paid_at) VALUES (?, ?, datetime('now'))
     ''', (registration_id, amount))
     conn.commit()
     conn.close()
@@ -145,16 +145,16 @@ def pay_for_activity(registration_id, amount):
 def get_activities():
     conn = connect_db()
     cursor = conn.cursor()
-    cursor.execute("SELECT activity_id, name FROM activities")
+    cursor.execute("SELECT activity_name FROM activities")
     activities = cursor.fetchall()
     conn.close()
     return activities
 
 
-def verify_user(nom, matricule):
+def verify_user(username, password):
     conn = connect_db()
     cursor = conn.cursor()
-    cursor.execute("SELECT user_id FROM users WHERE nom=? AND matricule=?", (nom, matricule))
+    cursor.execute("SELECT user_id FROM users WHERE username=? AND password=?", (username, password))
     user = cursor.fetchone()
     conn.close()
     return user[0] if user else None

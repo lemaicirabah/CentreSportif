@@ -18,7 +18,7 @@ class Profil:
         profile_window.resizable(width=False, height=False)
         profile_window.configure(background="#332c7a")
 
-        title = tk.Label(profile_window, background="#332c7a", foreground="#FFFFFF", text="Your profil",
+        title = tk.Label(profile_window, background="#332c7a", foreground="#FFFF00", text="Your profil",
                          font=("Arial", 20))
         title.grid(row=0, column=2, padx=10, pady=10)
         title.place(relx=0.5, rely=0.1, anchor=tk.CENTER)
@@ -31,7 +31,7 @@ class Profil:
             infos.grid(row=2, column=2, padx=10, pady=10)
             infos.place(relx=0.5, rely=0.5, anchor=tk.CENTER)
 
-            edit_button = tk.Button(profile_window, text="Modifier", command=self.modify_profile)
+            edit_button = tk.Button(profile_window, background="#FFFF00", foreground="#000000", text="Modifier", command=self.modify_profile)
             edit_button.grid(row=4, column=2, pady=10)
             edit_button.place(relx=0.5, rely=0.9, anchor=tk.CENTER)
 
